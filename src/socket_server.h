@@ -40,10 +40,12 @@ class SocketServer {
         public:
         ConnectionManager() : fdmax(0) {};
         ~ConnectionManager();
-        void init();
-        void add_connection(const Connection &connection);
-        void remove_connection(const Connection &connection);
+
+        static ConnectionManager* create();
+        void add_connection(Connection *connection);
+        void remove_connection(const Connection *connection);
         void get_connections_fds(fd_set *dest) const;
+        void init();
 
         private:
         void add_fd(int fd);
