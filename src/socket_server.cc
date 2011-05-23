@@ -8,6 +8,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#include "string_util.h"
+#include "socket_server.h"
+
 const uint16_t PORT = 3000;
 const int TIMEOUT = 30;
 
@@ -24,6 +27,7 @@ void enable_reuseaddr(int socket) {
     }
 }
 
+#if 0
 int main() {
     int status;
 
@@ -111,4 +115,19 @@ int main() {
             }
         }
     }
+}
+#endif
+
+namespace omninet {
+
+std::string SocketServer::Connection::get_address() {
+    std::string address_str = inet_ntoa(address.sin_addr);
+
+    address_str += ":";
+    int port = ntohs(address.sin_port);
+    address_str += int_to_string(port);
+
+    return address_str;
+}
+
 }
