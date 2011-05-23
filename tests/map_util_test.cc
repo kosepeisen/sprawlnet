@@ -30,10 +30,22 @@ TEST(map_util, erase_no_deletion) {
 }
 
 TEST(map_util, delete_all_map_values) {
+    delete_called = false;
+
     map<int, A*> my_map;
     A *a = new A;
     my_map[0] = a;
     delete_all_map_values(my_map);
+    EXPECT_TRUE(delete_called);
+}
+
+TEST(map_util, delete_all_vector_values) {
+    delete_called = false;
+
+    vector<A*> my_vector;
+    A *a = new A;
+    my_vector.push_back(a);
+    delete_all_vector_values(my_vector);
     EXPECT_TRUE(delete_called);
 }
 
