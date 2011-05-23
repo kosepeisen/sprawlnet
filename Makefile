@@ -7,7 +7,7 @@ CXXFLAGS=-Wall -pedantic -Isrc -g
 LIBS=
 TARGET=./main
 
-TESTLIBS=-lgtest_main -lpthread
+TESTLIBS=-lgtest -lgtest_main -lpthread
 TESTTARGET=tests/runtests
 
 EVTARGET=evaluator
