@@ -2,14 +2,14 @@
 #include <netinet/in.h>
 #include <sys/select.h>
 
-#include <memory>
+#include <tr1/memory>
 #include <string>
 
 #include "gtest/gtest.h"
 
 #include "socket_server.h"
 
-using std::auto_ptr;
+using std::tr1::shared_ptr;
 
 namespace omninet {
 
@@ -32,7 +32,7 @@ TEST(SocketServer_Connection, get_address) {
 }
 
 TEST(SocketServer_ConnectionManager, add_connection) {
-    auto_ptr<SocketServer::ConnectionManager>
+    shared_ptr<SocketServer::ConnectionManager>
             manager(SocketServer::ConnectionManager::create());
 
     struct sockaddr_in unused_address;
