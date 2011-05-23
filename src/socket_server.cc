@@ -120,7 +120,7 @@ int main() {
 
 namespace omninet {
 
-std::string SocketServer::Connection::get_address() {
+std::string SocketServer::Connection::get_address_str() const {
     std::string address_str = inet_ntoa(address.sin_addr);
 
     address_str += ":";
@@ -129,5 +129,33 @@ std::string SocketServer::Connection::get_address() {
 
     return address_str;
 }
+
+SocketServer::ConnectionManager::~ConnectionManager() {
+    // TODO: Implement this.
+}
+
+void SocketServer::ConnectionManager::init() {
+    FD_ZERO(&connection_fds);
+}
+
+void SocketServer::ConnectionManager::get_connections_fds(fd_set *dest) const {
+    *dest = connection_fds;
+}
+
+void SocketServer::ConnectionManager::add_connection(
+        const Connection &connection) {
+    Connection *connection_ = new Connection(connection.get_fd(),
+            connection.get_address());
+    add_fd(connection_->get_fd());
+    active_connections[connection_->get_fd()] = connection_;
+}
+
+void SocketServer::ConnectionManager::add_fd(int fd) {
+    if (fd > fdmax) {
+        fdmax = fd;
+    }
+    FD_SET(fd, &connection_fds);
+}
+
 
 }
