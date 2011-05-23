@@ -16,9 +16,9 @@ EVTARGET=evaluator
 all: main test
 
 .PHONY:main
-main: $(OBJS)
+main: main.o $(OBJS)
 	@echo "$(OBJS)"
-	$(CXX) $(OBJS) $(CXXFLAGS) -o $(TARGET) $(LIBS)
+	$(CXX) main.o $(OBJS) $(CXXFLAGS) -o $(TARGET) $(LIBS)
 
 .PHONY:test
 test: $(OBJS) $(TESTOBJS)
