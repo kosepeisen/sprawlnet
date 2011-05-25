@@ -119,7 +119,7 @@ int main() {
 }
 #endif
 
-namespace omninet {
+namespace sprawlnet {
 
 SocketServer::ConnectionManager* SocketServer::ConnectionManager::create() {
     ConnectionManager* manager = new ConnectionManager();

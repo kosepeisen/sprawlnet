@@ -11,7 +11,7 @@
 
 using std::tr1::shared_ptr;
 
-namespace omninet {
+namespace sprawlnet {
 
 TEST(SocketServer_Connection, get_address) {
     std::string test_addr = "172.43.5.19";        

@@ -3,7 +3,7 @@
 
 #include "string_util.h"
 
-namespace omninet {
+namespace sprawlnet {
 
 std::string int_to_string(int number) {
     std::ostringstream out(std::ostringstream::out);

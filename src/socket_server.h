@@ -13,7 +13,7 @@
 using std::map;
 using std::tr1::shared_ptr;
 
-namespace omninet {
+namespace sprawlnet {
 
 class SocketServer {
     public:

@@ -6,7 +6,7 @@
 
 #include "string_util.h"
 
-namespace omninet {
+namespace sprawlnet {
 
 TEST(Strings, int_to_string) {
     EXPECT_EQ("1234", int_to_string(1234));

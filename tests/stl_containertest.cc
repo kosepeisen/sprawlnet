@@ -15,7 +15,7 @@ class A {
     }
 };
 
-namespace omninet {
+namespace sprawlnet {
 
 TEST(std_map, erase_no_deletion) {
     delete_called = false;

@@ -1,6 +1,6 @@
 #include "socket_server.h"
 
-using omninet::SocketServer;
+using sprawlnet::SocketServer;
 
 int main() {
     SocketServer server;
