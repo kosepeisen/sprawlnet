@@ -34,7 +34,7 @@ TEST(SocketServer_Connection, get_addr_str) {
 
     c.set_address(addr->ai_addr, addr->ai_addrlen);
 
-    EXPECT_EQ(string("localhost:1337"), c.get_address_str());
+    EXPECT_EQ(string("127.0.0.1:1337"), c.get_address_str());
 }
 
 TEST(SocketServer_ConnectionManager, add_connection) {

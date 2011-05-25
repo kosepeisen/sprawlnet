@@ -161,7 +161,8 @@ string SocketServer::Connection::get_address_str() const {
     char serv_buffer[NI_MAXSERV];
 
     int status = getnameinfo(address, address_len, host_buffer,
-            sizeof(host_buffer), serv_buffer, sizeof(serv_buffer), 0);
+            sizeof(host_buffer), serv_buffer, sizeof(serv_buffer),
+            NI_NUMERICHOST | NI_NUMERICSERV);
     
     if (status != 0) {
         return NULL;
@@ -243,11 +244,16 @@ int SocketServer::bind(const char *port) {
         if (fd == -1) {
             perror("Could not create socket.");
         } else {
+            Connection connection(fd);
+            connection.set_address(rp->ai_addr, rp->ai_addrlen);
+
             status = ::bind(fd, rp->ai_addr, rp->ai_addrlen);
             if (status == -1) {
-                perror("Could not bind to socket.");
+                printf("Could not bind to socket with address %s\n",
+                        connection.get_address_str().c_str());
+                perror("bind()");
             } else {
-                printf("Bound to socket.\n");
+                printf("Bound to %s.\n", connection.get_address_str().c_str());
                 sockets_bound++;
                 // TODO: Register fds.
             }
