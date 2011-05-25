@@ -34,7 +34,6 @@ class ConnectionManager;
 class SocketServer {
     public:
     static SocketServer* create();
-
     SocketServer() {}
     void init();
     
@@ -57,6 +56,10 @@ class SocketServer {
     private:
     shared_ptr<ConnectionManager> all_connections;
     fd_set listener_sockets;
+
+    // Not copyable.
+    SocketServer(const SocketServer &);
+    SocketServer &operator=(const SocketServer &);
 
     bool try_bind_connection(const Connection &connection);
 

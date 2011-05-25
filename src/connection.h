@@ -39,6 +39,11 @@ class Connection {
     socklen_t get_address(struct sockaddr *dest) const;
     socklen_t get_address_length() const { return address_len; }
     void copy_to(Connection *dest) const;
+
+    private:
+    // Not copyable.
+    Connection(const Connection &);
+    Connection &operator=(const Connection &);
 };
 
 } // namespace sprawlnet
