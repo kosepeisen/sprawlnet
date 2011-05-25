@@ -17,6 +17,7 @@ class Connection;
 
 class SocketServer {
     public:
+    // TODO: Extract this class.
     class ConnectionManager {
         public:
         ConnectionManager() : fdmax(0) {};
