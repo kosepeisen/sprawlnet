@@ -256,9 +256,33 @@ void SocketServer::handle_fd_activity(int fd) {
     
     if (FD_ISSET(fd, &listener_sockets)) {
         printf("Activity on %s. Open new connection.\n", connection.get_address_str().c_str());
+        accept_new_connection(connection);
     } else {
         printf("Activity on connection %s.\n", connection.get_address_str().c_str());
+        receive_from_connection(connection);
     }
+}
+
+void SocketServer::accept_new_connection(const Connection &listener) {
+    struct sockaddr_storage remote_addr;
+    socklen_t addrlen = sizeof(remote_addr);
+    
+    int new_fd = accept(listener.get_fd(), (struct sockaddr*)&remote_addr, 
+            &addrlen);
+    if (new_fd == -1) {
+        perror("Could not accept connection. accept()");
+    } else {
+        Connection new_connection(new_fd);
+        new_connection.set_address((const struct sockaddr*)&remote_addr,
+                addrlen);
+        all_connections->add_connection(new_connection);
+        printf("Connection accepted from %s\n", 
+                new_connection.get_address_str().c_str());
+    }
+}
+
+void SocketServer::receive_from_connection(const Connection &connection) {
+
 }
 
 void SocketServer::enable_reuseaddr(int fd) {
