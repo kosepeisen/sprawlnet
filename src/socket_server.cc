@@ -49,7 +49,7 @@ void SocketServer::Connection::copy_to(Connection *dest) const {
     dest->set_address(address, address_len);
 }
 
-SocketServer::ConnectionManager* SocketServer::ConnectionManager::create() {
+SocketServer::ConnectionManager *SocketServer::ConnectionManager::create() {
     ConnectionManager* manager = new ConnectionManager();
     manager->init();
     return manager;
@@ -133,7 +133,7 @@ bool SocketServer::ConnectionManager::get_connection(int fd,
     }
 }
 
-SocketServer* SocketServer::create() {
+SocketServer *SocketServer::create() {
     SocketServer* socketServer = new SocketServer();
     socketServer->init();
     return socketServer;
