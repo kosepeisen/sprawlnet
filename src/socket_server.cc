@@ -167,7 +167,7 @@ string SocketServer::Connection::get_address_str() const {
     if (status != 0) {
         return NULL;
     } else {
-        return string() + host_buffer + ":" + serv_buffer;
+        return string() + host_buffer + " port(" + serv_buffer + ")";
     }
 }
 
