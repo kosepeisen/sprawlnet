@@ -41,8 +41,8 @@ TEST(SocketServer_ConnectionManager, add_connection) {
     shared_ptr<SocketServer::ConnectionManager>
             manager(SocketServer::ConnectionManager::create());
 
-    SocketServer::Connection *conn1 = new SocketServer::Connection(1);
-    SocketServer::Connection *conn2 = new SocketServer::Connection(2);
+    SocketServer::Connection conn1(1);
+    SocketServer::Connection conn2(2);
 
     manager->add_connection(conn1);
     manager->add_connection(conn2);
@@ -58,8 +58,8 @@ TEST(SocketServer_ConnectionManager, remove_connection) {
     shared_ptr<SocketServer::ConnectionManager>
             manager(SocketServer::ConnectionManager::create());
 
-    SocketServer::Connection *conn1 = new SocketServer::Connection(1);
-    SocketServer::Connection *conn2 = new SocketServer::Connection(2);
+    SocketServer::Connection conn1(1);
+    SocketServer::Connection conn2(2);
 
     manager->add_connection(conn1);
     manager->add_connection(conn2);
@@ -87,13 +87,13 @@ TEST(SocketServer_ConnectionManager, get_connection) {
     shared_ptr<SocketServer::ConnectionManager>
             manager(SocketServer::ConnectionManager::create());
 
-    SocketServer::Connection *conn1 = new SocketServer::Connection(1);
+    SocketServer::Connection conn(1);
 
-    manager->add_connection(conn1);
+    manager->add_connection(conn);
 
-    SocketServer::Connection conn;
-    manager->get_connection(1, &conn);
-    EXPECT_EQ(1, conn.get_fd());
+    SocketServer::Connection conn_;
+    manager->get_connection(1, &conn_);
+    EXPECT_EQ(1, conn_.get_fd());
 }
 
 }

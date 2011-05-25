@@ -183,14 +183,18 @@ void SocketServer::ConnectionManager::get_connections_fds(fd_set *dest) const {
     *dest = connection_fds;
 }
 
-void SocketServer::ConnectionManager::add_connection(Connection *connection) {
-    add_fd(connection->get_fd());
-    active_connections[connection->get_fd()] = shared_ptr<Connection>(connection);
+void SocketServer::ConnectionManager::add_connection(
+        const Connection &connection) {
+    shared_ptr<Connection> connection_(new Connection());
+    connection.copy_to(connection_.get());
+
+    add_fd(connection_->get_fd());
+    active_connections[connection_->get_fd()] = connection_;
 }
 
 void SocketServer::ConnectionManager::remove_connection(
-        const Connection *connection) {
-    remove_connection_by_fd(connection->get_fd());
+        const Connection &connection) {
+    remove_connection_by_fd(connection.get_fd());
 }
 
 void SocketServer::ConnectionManager::remove_connection_by_fd(int fd) {

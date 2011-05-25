@@ -49,9 +49,9 @@ class SocketServer {
          * @returns true if the connection was copied, false otherwise.
          */
         bool get_connection(int fd, Connection *dest) const;
-        void add_connection(Connection *connection);
+        void add_connection(const Connection &connection);
         void remove_connection_by_fd(int fd);
-        void remove_connection(const Connection *connection);
+        void remove_connection(const Connection &connection);
         void get_connections_fds(fd_set *dest) const;
         void init();
 
