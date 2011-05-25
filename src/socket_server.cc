@@ -157,7 +157,17 @@ SocketServer::ConnectionManager* SocketServer::ConnectionManager::create() {
 }
 
 string SocketServer::Connection::get_address_str() const {
-    return string();
+    char host_buffer[NI_MAXHOST];
+    char serv_buffer[NI_MAXSERV];
+
+    int status = getnameinfo(address, address_len, host_buffer,
+            sizeof(host_buffer), serv_buffer, sizeof(serv_buffer), 0);
+    
+    if (status != 0) {
+        return NULL;
+    } else {
+        return string() + host_buffer + ":" + serv_buffer;
+    }
 }
 
 SocketServer::ConnectionManager::~ConnectionManager() {

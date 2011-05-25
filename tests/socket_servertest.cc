@@ -1,6 +1,8 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/select.h>
+#include <sys/types.h>
+#include <netdb.h>
 #include <string.h>
 
 #include <tr1/memory>
@@ -10,6 +12,7 @@
 
 #include "socket_server.h"
 
+using std::string;
 using std::tr1::shared_ptr;
 
 namespace sprawlnet {
@@ -21,6 +24,17 @@ TEST(SocketServer_Connection, set_addr) {
     int result;
     c.get_address((struct sockaddr*)&result);
     EXPECT_EQ(expected, result);
+}
+
+TEST(SocketServer_Connection, get_addr_str) {
+    SocketServer::Connection c;
+    struct addrinfo *addr;
+    int status = getaddrinfo("127.0.0.1", "1337", 0, &addr);
+    ASSERT_EQ(0, status);
+
+    c.set_address(addr->ai_addr, addr->ai_addrlen);
+
+    EXPECT_EQ(string("localhost:1337"), c.get_address_str());
 }
 
 TEST(SocketServer_ConnectionManager, add_connection) {
