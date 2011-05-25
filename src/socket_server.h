@@ -19,28 +19,19 @@ class SocketServer {
     public:
     class Connection {
         int fd;
-        struct sockaddr_in address;
+        struct sockaddr *address;
+        socklen_t address_len;
 
         public:
-        Connection() : fd(-1) {}
-        Connection(int fd, struct sockaddr_in address)
-            : fd(fd),
-              address(address) {}
+        Connection() : fd(-1), address_len(0) {}
+        Connection(int fd) : fd(fd), address(NULL), address_len(0) {}
+        ~Connection();
 
         std::string get_address_str() const;
-
-        int get_fd() const {
-            return fd;
-        }
-
-        struct sockaddr_in get_address() const {
-            return address;
-        }
-
-        void copy_to(Connection *dest) const {
-            dest->fd = fd;
-            dest->address = address;
-        }
+        int get_fd() const { return fd; }
+        void set_address(const struct sockaddr *address, socklen_t address_len);
+        socklen_t get_address(struct sockaddr *dest) const;
+        void copy_to(Connection *dest) const;
     };
 
     class ConnectionManager {

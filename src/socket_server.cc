@@ -1,16 +1,19 @@
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <arpa/inet.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <netdb.h>
+#include <string.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "string_util.h"
 #include "socket_server.h"
+
+using std::string;
 
 const uint16_t PORT = 3000;
 const int TIMEOUT = 30;
@@ -121,20 +124,40 @@ int main() {
 
 namespace sprawlnet {
 
+SocketServer::Connection::~Connection() {
+    if (address_len) {
+        free(address);
+    }
+}
+
+void SocketServer::Connection::set_address(const struct sockaddr *address,
+        socklen_t address_len) {
+    if (this->address_len) {
+        free(this->address);
+    }
+    this->address = (struct sockaddr*)malloc(address_len);
+    this->address_len = address_len;
+    memcpy(this->address, address, address_len);
+}
+
+socklen_t SocketServer::Connection::get_address(struct sockaddr *dest) const {
+    memcpy(dest, address, address_len);
+    return address_len;
+}
+
+void SocketServer::Connection::copy_to(Connection *dest) const {
+    dest->fd = fd;
+    dest->set_address(address, address_len);
+}
+
 SocketServer::ConnectionManager* SocketServer::ConnectionManager::create() {
     ConnectionManager* manager = new ConnectionManager();
     manager->init();
     return manager;
 }
 
-std::string SocketServer::Connection::get_address_str() const {
-    std::string address_str = inet_ntoa(address.sin_addr);
-
-    address_str += ":";
-    int port = ntohs(address.sin_port);
-    address_str += int_to_string(port);
-
-    return address_str;
+string SocketServer::Connection::get_address_str() const {
+    return string();
 }
 
 SocketServer::ConnectionManager::~ConnectionManager() {

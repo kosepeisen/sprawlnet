@@ -1,6 +1,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/select.h>
+#include <string.h>
 
 #include <tr1/memory>
 #include <string>
@@ -13,33 +14,21 @@ using std::tr1::shared_ptr;
 
 namespace sprawlnet {
 
-TEST(SocketServer_Connection, get_address) {
-    std::string test_addr = "172.43.5.19";        
-    uint16_t port = 1234;
-    std::string port_str = "1234";
-
-    struct sockaddr_in test_sockaddr;
-    test_sockaddr.sin_family = AF_INET;
-    test_sockaddr.sin_port = htons(port);
-    ASSERT_NE(0, inet_pton(AF_INET, test_addr.c_str(),
-            &test_sockaddr.sin_addr));
-
-    SocketServer::Connection connection =
-            SocketServer::Connection(0, test_sockaddr);
-
-    std::string expected_test_addr_string = test_addr + ":" + port_str;
-    EXPECT_EQ(expected_test_addr_string, connection.get_address_str());
+TEST(SocketServer_Connection, set_addr) {
+    SocketServer::Connection c;
+    const int expected = 1337;
+    c.set_address((const struct sockaddr*)&expected, sizeof(expected));
+    int result;
+    c.get_address((struct sockaddr*)&result);
+    EXPECT_EQ(expected, result);
 }
 
 TEST(SocketServer_ConnectionManager, add_connection) {
     shared_ptr<SocketServer::ConnectionManager>
             manager(SocketServer::ConnectionManager::create());
 
-    struct sockaddr_in unused_address;
-    SocketServer::Connection *conn1 =
-            new SocketServer::Connection(1, unused_address);
-    SocketServer::Connection *conn2 =
-            new SocketServer::Connection(2, unused_address);
+    SocketServer::Connection *conn1 = new SocketServer::Connection(1);
+    SocketServer::Connection *conn2 = new SocketServer::Connection(2);
 
     manager->add_connection(conn1);
     manager->add_connection(conn2);
@@ -55,11 +44,8 @@ TEST(SocketServer_ConnectionManager, remove_connection) {
     shared_ptr<SocketServer::ConnectionManager>
             manager(SocketServer::ConnectionManager::create());
 
-    struct sockaddr_in unused_address;
-    SocketServer::Connection *conn1 =
-            new SocketServer::Connection(1, unused_address);
-    SocketServer::Connection *conn2 =
-            new SocketServer::Connection(2, unused_address);
+    SocketServer::Connection *conn1 = new SocketServer::Connection(1);
+    SocketServer::Connection *conn2 = new SocketServer::Connection(2);
 
     manager->add_connection(conn1);
     manager->add_connection(conn2);
@@ -87,9 +73,7 @@ TEST(SocketServer_ConnectionManager, get_connection) {
     shared_ptr<SocketServer::ConnectionManager>
             manager(SocketServer::ConnectionManager::create());
 
-    struct sockaddr_in unused_address;
-    SocketServer::Connection *conn1 =
-            new SocketServer::Connection(1, unused_address);
+    SocketServer::Connection *conn1 = new SocketServer::Connection(1);
 
     manager->add_connection(conn1);
 
