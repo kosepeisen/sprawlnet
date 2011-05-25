@@ -42,6 +42,7 @@ class SocketServer {
 
         static ConnectionManager* create();
 
+        bool has_connections() const;
         /**
          * Get a connection.
          *
@@ -50,6 +51,7 @@ class SocketServer {
          * @returns true if the connection was copied, false otherwise.
          */
         bool get_connection(int fd, Connection *dest) const;
+        int get_fdmax() const { return fdmax; }
         void add_connection(const Connection &connection);
         void remove_connection_by_fd(int fd);
         void remove_connection(const Connection &connection);
@@ -76,6 +78,13 @@ class SocketServer {
      */
     int bind(const char *port);
 
+    /**
+     * Listen to the bound sockets.
+     *
+     * Returns when all sockets are closed.
+     */
+    void listen();
+
     private:
     shared_ptr<ConnectionManager> all_connections;
     fd_set listener_sockets;
@@ -89,8 +98,17 @@ class SocketServer {
      * address to listen to.
      */
     void init_hints(struct addrinfo *hints); 
-};
 
+    /** 
+     * Enable reuseaddr on the socket.
+     *
+     * That way, we can bind to it several times, and we avoid the "address
+     * already in use" issue.
+     */
+    void enable_reuseaddr(int fd);
+
+    void handle_fd_activity(int fd);
+};
 }
 
 #endif

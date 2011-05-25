@@ -23,14 +23,6 @@ void error(const char *msg) {
     exit(1);
 }
 
-void enable_reuseaddr(int socket) {
-    int value = 1;
-    int status = setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &value, sizeof(int));
-    if (status == -1) {
-        error("Failed to set SO_REUSEADDR on socket.");
-    }
-}
-
 #if 0
 int main() {
     int status;
@@ -179,6 +171,10 @@ void SocketServer::ConnectionManager::init() {
     FD_ZERO(&connection_fds);
 }
 
+bool SocketServer::ConnectionManager::has_connections() const {
+    return !active_connections.empty();
+}
+
 void SocketServer::ConnectionManager::get_connections_fds(fd_set *dest) const {
     *dest = connection_fds;
 }
@@ -243,15 +239,22 @@ int SocketServer::bind(const char *port) {
 
     struct addrinfo *result, *rp;
     status = getaddrinfo(NULL, port, &hints, &result);
+    if (status != 0) {
+        fprintf(stderr, "selectserver: %s\n", gai_strerror(status));
+    }
 
     for (rp = result; rp != NULL; rp = rp->ai_next) {
         int fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+        enable_reuseaddr(fd);
         if (fd == -1) {
             perror("Could not create socket.");
         } else {
             Connection connection(fd);
             connection.set_address(rp->ai_addr, rp->ai_addrlen);
-            try_bind_connection(connection);
+            status = try_bind_connection(connection);
+            if (status) {
+                sockets_bound++;
+            }
         }
     }
 
@@ -267,15 +270,25 @@ bool SocketServer::try_bind_connection(const Connection &connection) {
     int status = ::bind(connection.get_fd(), address, address_length);
     bool result = false;
     if (status == -1) {
+        close(connection.get_fd());
         printf("Could not bind to socket with address %s\n",
                 connection.get_address_str().c_str());
         perror("bind()");
         result = false;
     } else {
-        printf("Bound to %s.\n", connection.get_address_str().c_str());
-        all_connections->add_connection(connection);
-        FD_SET(connection.get_fd(), &listener_sockets);
-        result = true;
+        status = ::listen(connection.get_fd(), 10);
+        if (status == -1) {
+            printf("Could not listen with address %s\n",
+                    connection.get_address_str().c_str());
+            perror("listen() failed");
+            result = false;
+        } else {
+            printf("Bound to %s.\n", connection.get_address_str().c_str());
+
+            all_connections->add_connection(connection);
+            FD_SET(connection.get_fd(), &listener_sockets);
+            result = true;
+        }
     }
 
     free(address);
@@ -285,12 +298,62 @@ bool SocketServer::try_bind_connection(const Connection &connection) {
 void SocketServer::init_hints(struct addrinfo *hints) {
     memset(hints, 0, sizeof(struct addrinfo));
     hints->ai_family = AF_UNSPEC;
-    hints->ai_socktype = SOCK_DGRAM;
+    hints->ai_socktype = SOCK_STREAM;
     hints->ai_flags = AI_PASSIVE;
     hints->ai_protocol = 0;
     hints->ai_canonname = NULL;
     hints->ai_addr = NULL;
     hints->ai_next = NULL;
+}
+
+void SocketServer::listen() {
+    int status;
+    fd_set sockets_copy;
+    struct timeval timeout = { 30, 0 };
+
+    while (all_connections->has_connections()) {
+        // all_connections->get_connections_fds(&sockets_copy);
+        sockets_copy = listener_sockets;
+        printf("fdmax: %d\n", all_connections->get_fdmax());
+        status = select(all_connections->get_fdmax() + 1,
+                &sockets_copy, NULL, NULL, &timeout);
+        if (status == -1) {
+            perror("Select() failed.");
+            return;
+        }
+
+        for (int fd = 0; fd <= all_connections->get_fdmax(); fd++) {
+            if (FD_ISSET(fd, &sockets_copy)) {
+                printf("handle_fd_activity(%d)\n", fd);
+                handle_fd_activity(fd);
+            }
+        }
+    }
+}
+
+void SocketServer::handle_fd_activity(int fd) {
+    int status;
+    Connection connection;
+
+    status = all_connections->get_connection(fd, &connection);
+    if (!status) {
+        printf("No connection found for file descriptor %d", fd);
+        return;
+    }
+    
+    if (FD_ISSET(fd, &listener_sockets)) {
+        printf("Activity on %s. Open new connection.\n", connection.get_address_str().c_str());
+    } else {
+        printf("Activity on connection %s.\n", connection.get_address_str().c_str());
+    }
+}
+
+void SocketServer::enable_reuseaddr(int fd) {
+    int value = 1;
+    int status = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &value, sizeof(int));
+    if (status == -1) {
+        error("Failed to set SO_REUSEADDR on socket.");
+    }
 }
 
 }
