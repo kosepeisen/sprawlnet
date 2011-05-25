@@ -225,8 +225,7 @@ void SocketServer::listen() {
     struct timeval timeout = { 30, 0 };
 
     while (all_connections->has_connections()) {
-        // all_connections->get_connections_fds(&sockets_copy);
-        sockets_copy = listener_sockets;
+        all_connections->get_connections_fds(&sockets_copy);
         printf("fdmax: %d\n", all_connections->get_fdmax());
         status = select(all_connections->get_fdmax() + 1,
                 &sockets_copy, NULL, NULL, &timeout);
@@ -282,7 +281,30 @@ void SocketServer::accept_new_connection(const Connection &listener) {
 }
 
 void SocketServer::receive_from_connection(const Connection &connection) {
+    const size_t BUFSIZE = 1024;
+    char buffer[BUFSIZE+1];
+    int num_bytes_read = recv(connection.get_fd(), buffer, BUFSIZE, 0);
+    if (num_bytes_read < 0) {
+        perror("Could not receive from socket: recv()");
+        close_connection(connection);
+    } else if (num_bytes_read == 0) {
+        printf("Connection closed.\n");
+        close_connection(connection);
+    } else {
+        buffer[num_bytes_read] = '\0';
+        printf("Received data from client: %s\n", buffer);
+    }
+}
 
+void SocketServer::close_connection(const Connection &connection) {
+    printf("Closing connection with address %s\n",
+            connection.get_address_str().c_str());
+    close(connection.get_fd());
+
+    all_connections->remove_connection(connection);
+    if (FD_ISSET(connection.get_fd(), &listener_sockets)) {
+        FD_CLR(connection.get_fd(), &listener_sockets);
+    }
 }
 
 void SocketServer::enable_reuseaddr(int fd) {

@@ -113,6 +113,7 @@ class SocketServer {
     void handle_fd_activity(int fd);
     void accept_new_connection(const Connection &listener);
     void receive_from_connection(const Connection &connection);
+    void close_connection(const Connection &connection);
 };
 }
 
