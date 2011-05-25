@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
@@ -189,6 +190,50 @@ bool SocketServer::ConnectionManager::get_connection(int fd,
     } else {
         return false;
     }
+}
+
+void SocketServer::init() {
+    connection_manager.reset(new ConnectionManager());
+}
+
+int SocketServer::bind(const char *port) {
+    int status;
+    int sockets_bound = 0;
+    struct addrinfo hints;
+    init_hints(&hints);
+
+    struct addrinfo *result, *rp;
+    status = getaddrinfo(NULL, port, &hints, &result);
+
+    for (rp = result; rp != NULL; rp = rp->ai_next) {
+        int fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+        if (fd == -1) {
+            perror("Could not create socket.");
+        } else {
+            status = ::bind(fd, rp->ai_addr, rp->ai_addrlen);
+            if (status == -1) {
+                perror("Could not bind to socket.");
+            } else {
+                printf("Bound to socket.\n");
+                sockets_bound++;
+                // TODO: Register fds.
+            }
+        }
+    }
+
+    freeaddrinfo(result);
+    return sockets_bound;
+}
+
+void SocketServer::init_hints(struct addrinfo *hints) {
+    memset(hints, 0, sizeof(struct addrinfo));
+    hints->ai_family = AF_UNSPEC;
+    hints->ai_socktype = SOCK_DGRAM;
+    hints->ai_flags = AI_PASSIVE;
+    hints->ai_protocol = 0;
+    hints->ai_canonname = NULL;
+    hints->ai_addr = NULL;
+    hints->ai_next = NULL;
 }
 
 }

@@ -43,8 +43,6 @@ class SocketServer {
         }
     };
 
-    SocketServer() {}
-
     class ConnectionManager {
         public:
         ConnectionManager() : fdmax(0) {};
@@ -74,6 +72,29 @@ class SocketServer {
         map<int, shared_ptr<Connection> > active_connections; 
     };
 
+    SocketServer() {}
+    void init();
+    
+    /**
+     * Bind to a port.
+     *
+     * Tries to bind to `port' on both IPv4 and IPv6.
+     *
+     * @returns The number of addresses bound to.
+     */
+    int bind(const char *port);
+
+    private:
+    shared_ptr<ConnectionManager> connection_manager;
+    fd_set listener_sockets;
+
+    /** 
+     * Initialize a default hints argument.
+     *
+     * This struct will specify the default criteria for selecting the socket
+     * address to listen to.
+     */
+    void init_hints(struct addrinfo *hints); 
 };
 
 }
