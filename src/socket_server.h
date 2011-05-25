@@ -5,9 +5,7 @@
 #include <sys/select.h>
 
 #include <tr1/memory>
-
 #include <map>
-
 #include <string>
 
 using std::map;
@@ -15,26 +13,10 @@ using std::tr1::shared_ptr;
 
 namespace sprawlnet {
 
+class Connection;
+
 class SocketServer {
     public:
-    class Connection {
-        int fd;
-        struct sockaddr *address;
-        socklen_t address_len;
-
-        public:
-        Connection() : fd(-1), address_len(0) {}
-        Connection(int fd) : fd(fd), address(NULL), address_len(0) {}
-        ~Connection();
-
-        std::string get_address_str() const;
-        int get_fd() const { return fd; }
-        void set_address(const struct sockaddr *address, socklen_t address_len);
-        socklen_t get_address(struct sockaddr *dest) const;
-        socklen_t get_address_length() const { return address_len; }
-        void copy_to(Connection *dest) const;
-    };
-
     class ConnectionManager {
         public:
         ConnectionManager() : fdmax(0) {};

@@ -10,6 +10,7 @@
 
 #include "gtest/gtest.h"
 
+#include "connection.h"
 #include "socket_server.h"
 
 using std::string;
@@ -17,8 +18,8 @@ using std::tr1::shared_ptr;
 
 namespace sprawlnet {
 
-TEST(SocketServer_Connection, set_addr) {
-    SocketServer::Connection c;
+TEST(Connection, set_addr) {
+    Connection c;
     const int expected = 1337;
     c.set_address((const struct sockaddr*)&expected, sizeof(expected));
     int result;
@@ -27,7 +28,7 @@ TEST(SocketServer_Connection, set_addr) {
 }
 
 TEST(SocketServer_Connection, get_addr_str) {
-    SocketServer::Connection c;
+    Connection c;
     struct addrinfo *addr;
     int status = getaddrinfo("127.0.0.1", "1337", 0, &addr);
     ASSERT_EQ(0, status);
@@ -41,8 +42,8 @@ TEST(SocketServer_ConnectionManager, add_connection) {
     shared_ptr<SocketServer::ConnectionManager>
             manager(SocketServer::ConnectionManager::create());
 
-    SocketServer::Connection conn1(1);
-    SocketServer::Connection conn2(2);
+    Connection conn1(1);
+    Connection conn2(2);
 
     manager->add_connection(conn1);
     manager->add_connection(conn2);
@@ -58,8 +59,8 @@ TEST(SocketServer_ConnectionManager, remove_connection) {
     shared_ptr<SocketServer::ConnectionManager>
             manager(SocketServer::ConnectionManager::create());
 
-    SocketServer::Connection conn1(1);
-    SocketServer::Connection conn2(2);
+    Connection conn1(1);
+    Connection conn2(2);
 
     manager->add_connection(conn1);
     manager->add_connection(conn2);
@@ -87,11 +88,11 @@ TEST(SocketServer_ConnectionManager, get_connection) {
     shared_ptr<SocketServer::ConnectionManager>
             manager(SocketServer::ConnectionManager::create());
 
-    SocketServer::Connection conn(1);
+    Connection conn(1);
 
     manager->add_connection(conn);
 
-    SocketServer::Connection conn_;
+    Connection conn_;
     manager->get_connection(1, &conn_);
     EXPECT_EQ(1, conn_.get_fd());
 }

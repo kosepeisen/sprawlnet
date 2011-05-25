@@ -1,17 +1,16 @@
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <netinet/in.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <string.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "string_util.h"
+#include "connection.h"
 #include "socket_server.h"
+#include "string_util.h"
 
 using std::string;
 
@@ -23,51 +22,10 @@ void error(const char *msg) {
 }
 
 
-SocketServer::Connection::~Connection() {
-    if (address_len) {
-        free(address);
-    }
-}
-
-void SocketServer::Connection::set_address(const struct sockaddr *address,
-        socklen_t address_len) {
-    if (this->address_len) {
-        free(this->address);
-    }
-    this->address = (struct sockaddr*)malloc(address_len);
-    this->address_len = address_len;
-    memcpy(this->address, address, address_len);
-}
-
-socklen_t SocketServer::Connection::get_address(struct sockaddr *dest) const {
-    memcpy(dest, address, address_len);
-    return address_len;
-}
-
-void SocketServer::Connection::copy_to(Connection *dest) const {
-    dest->fd = fd;
-    dest->set_address(address, address_len);
-}
-
 SocketServer::ConnectionManager *SocketServer::ConnectionManager::create() {
     ConnectionManager* manager = new ConnectionManager();
     manager->init();
     return manager;
-}
-
-string SocketServer::Connection::get_address_str() const {
-    char host_buffer[NI_MAXHOST];
-    char serv_buffer[NI_MAXSERV];
-
-    int status = getnameinfo(address, address_len, host_buffer,
-            sizeof(host_buffer), serv_buffer, sizeof(serv_buffer),
-            NI_NUMERICHOST | NI_NUMERICSERV);
-    
-    if (status != 0) {
-        return NULL;
-    } else {
-        return string() + host_buffer + " port(" + serv_buffer + ")";
-    }
 }
 
 SocketServer::ConnectionManager::~ConnectionManager() {
