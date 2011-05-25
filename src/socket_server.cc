@@ -133,8 +133,14 @@ bool SocketServer::ConnectionManager::get_connection(int fd,
     }
 }
 
+SocketServer* SocketServer::create() {
+    SocketServer* socketServer = new SocketServer();
+    socketServer->init();
+    return socketServer;
+}
+
 void SocketServer::init() {
-    all_connections.reset(new ConnectionManager());
+    all_connections.reset(ConnectionManager::create());
     FD_ZERO(&listener_sockets);
 }
 

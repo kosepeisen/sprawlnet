@@ -67,6 +67,9 @@ class SocketServer {
     };
 
     SocketServer() {}
+
+    static SocketServer* create();
+
     void init();
     
     /**
