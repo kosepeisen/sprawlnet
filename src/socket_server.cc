@@ -114,7 +114,6 @@ void SocketServer::listen() {
 
     while (all_connections->has_connections()) {
         all_connections->get_connections_fds(&sockets_copy);
-        printf("fdmax: %d\n", all_connections->get_fdmax());
         status = select(all_connections->get_fdmax() + 1,
                 &sockets_copy, NULL, NULL, &timeout);
         if (status == -1) {
