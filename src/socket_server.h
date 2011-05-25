@@ -31,6 +31,7 @@ class SocketServer {
         int get_fd() const { return fd; }
         void set_address(const struct sockaddr *address, socklen_t address_len);
         socklen_t get_address(struct sockaddr *dest) const;
+        socklen_t get_address_length() const { return address_len; }
         void copy_to(Connection *dest) const;
     };
 
@@ -76,8 +77,10 @@ class SocketServer {
     int bind(const char *port);
 
     private:
-    shared_ptr<ConnectionManager> connection_manager;
+    shared_ptr<ConnectionManager> all_connections;
     fd_set listener_sockets;
+
+    bool try_bind_connection(const Connection &connection);
 
     /** 
      * Initialize a default hints argument.

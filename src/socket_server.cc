@@ -231,7 +231,7 @@ bool SocketServer::ConnectionManager::get_connection(int fd,
 }
 
 void SocketServer::init() {
-    connection_manager.reset(new ConnectionManager());
+    all_connections.reset(new ConnectionManager());
     FD_ZERO(&listener_sockets);
 }
 
@@ -251,23 +251,35 @@ int SocketServer::bind(const char *port) {
         } else {
             Connection connection(fd);
             connection.set_address(rp->ai_addr, rp->ai_addrlen);
-
-            status = ::bind(fd, rp->ai_addr, rp->ai_addrlen);
-            if (status == -1) {
-                printf("Could not bind to socket with address %s\n",
-                        connection.get_address_str().c_str());
-                perror("bind()");
-            } else {
-                printf("Bound to %s.\n", connection.get_address_str().c_str());
-                connection_manager.add_connection(connection);
-                FD_SET(fd, listener_sockets);
-                sockets_bound++;
-            }
+            try_bind_connection(connection);
         }
     }
 
     freeaddrinfo(result);
     return sockets_bound;
+}
+
+bool SocketServer::try_bind_connection(const Connection &connection) {
+    int address_length = connection.get_address_length();
+    struct sockaddr *address = (struct sockaddr*)malloc(address_length);
+    connection.get_address(address);
+
+    int status = ::bind(connection.get_fd(), address, address_length);
+    bool result = false;
+    if (status == -1) {
+        printf("Could not bind to socket with address %s\n",
+                connection.get_address_str().c_str());
+        perror("bind()");
+        result = false;
+    } else {
+        printf("Bound to %s.\n", connection.get_address_str().c_str());
+        all_connections->add_connection(connection);
+        FD_SET(connection.get_fd(), &listener_sockets);
+        result = true;
+    }
+
+    free(address);
+    return result;
 }
 
 void SocketServer::init_hints(struct addrinfo *hints) {
