@@ -23,10 +23,18 @@ namespace sprawlnet {
 
 class Connection;
 
+struct PartialMessage {
+    ~PartialMessage();
+    int bytes_received;
+    int message_size;
+    char *buffer;
+};
+
 // TODO: This class needs to have a MessageHandler of some kind.
 class MessageAssembler {
     public:
     MessageAssembler() {};
+    virtual ~MessageAssembler() {};
 
     void assemble(const Connection &connection, const char *buffer,
             size_t buffer_size);
@@ -36,20 +44,14 @@ class MessageAssembler {
      *
      * This will free up space in partial_messages.
      */
-    void closeConnection(const Connection &connection);
+    void close_connection(const Connection &connection);
     
     protected:
-    struct PartialMessage {
-        ~PartialMessage();
-        int bytes_received;
-        int message_size;
-        char *buffer;
-    };
 
     std::map<int, std::tr1::shared_ptr<PartialMessage> > partial_messages;
 
     // TODO: Implement this.
-    void handle(const char *buffer, size_t buffer_size);
+    virtual void handle(const char *buffer, size_t buffer_size);
 
     void assemble_partial(const Connection &connection, const char *buffer,
             size_t buffer_size);

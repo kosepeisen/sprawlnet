@@ -27,7 +27,7 @@ using std::tr1::shared_ptr;
 
 namespace sprawlnet {
 
-MessageAssembler::PartialMessage::~PartialMessage() {
+PartialMessage::~PartialMessage() {
     delete buffer;
 }
 
@@ -81,13 +81,14 @@ void MessageAssembler::assemble_partial(const Connection &connection,
     memcpy(partial->buffer + partial->bytes_received, buffer, bytes_to_copy);
     partial->bytes_received += bytes_to_copy;
 
-    handle(partial->buffer, partial->message_size);
-    partial_messages.erase(connection.get_fd());
-
-    assemble(connection, buffer + bytes_to_copy, buffer_size - bytes_to_copy);
+    if (partial->bytes_received == partial->message_size) {
+        handle(partial->buffer, partial->message_size);
+        partial_messages.erase(connection.get_fd());
+        assemble(connection, buffer + bytes_to_copy, buffer_size - bytes_to_copy);
+    }
 }
 
-MessageAssembler::PartialMessage *
+PartialMessage *
 MessageAssembler::get_partial_message(const Connection &connection) {
     map<int, shared_ptr<PartialMessage> >::const_iterator it =
             partial_messages.find(connection.get_fd());
@@ -107,8 +108,8 @@ void MessageAssembler::handle(const char *buffer, size_t buffer_size) {
     delete message;
 }
 
-void MessageAssembler::closeConnection(const Connection &connection) {
+void MessageAssembler::close_connection(const Connection &connection) {
     partial_messages.erase(connection.get_fd());
-}
+};
 
 } // namespace sprawlnet
