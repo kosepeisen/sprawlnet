@@ -150,7 +150,21 @@ void SocketServer::ConnectionManager::get_connections_fds(fd_set *dest) const {
 
 void SocketServer::ConnectionManager::add_connection(Connection *connection) {
     add_fd(connection->get_fd());
-    active_connections[connection->get_fd()] = connection;
+    active_connections[connection->get_fd()] = shared_ptr<Connection>(connection);
+}
+
+void SocketServer::ConnectionManager::remove_connection(
+        const Connection *connection) {
+    remove_connection_by_fd(connection->get_fd());
+}
+
+void SocketServer::ConnectionManager::remove_connection_by_fd(int fd) {
+    map<int, shared_ptr<Connection> >::iterator it;
+    it = active_connections.find(fd);
+    if (it != active_connections.end()) {
+        remove_fd(fd);
+        active_connections.erase(it);
+    }
 }
 
 void SocketServer::ConnectionManager::add_fd(int fd) {
@@ -160,5 +174,21 @@ void SocketServer::ConnectionManager::add_fd(int fd) {
     FD_SET(fd, &connection_fds);
 }
 
+void SocketServer::ConnectionManager::remove_fd(int fd) {
+    // TODO: Do we have to update fdmax? I'm guessing no.
+    FD_CLR(fd, &connection_fds);
+}
+
+bool SocketServer::ConnectionManager::get_connection(int fd,
+        Connection *dest) const {
+    map<int, shared_ptr<Connection> >::const_iterator it;
+    it = active_connections.find(fd);
+    if (it != active_connections.end()) {
+        it->second->copy_to(dest);
+        return true;
+    } else {
+        return false;
+    }
+}
 
 }
