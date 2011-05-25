@@ -9,8 +9,8 @@
 #include <unistd.h>
 
 #include "connection.h"
+#include "connection_manager.h"
 #include "socket_server.h"
-#include "string_util.h"
 
 using std::string;
 
@@ -19,76 +19,6 @@ namespace sprawlnet {
 void error(const char *msg) {
     perror(msg);
     exit(1);
-}
-
-
-SocketServer::ConnectionManager *SocketServer::ConnectionManager::create() {
-    ConnectionManager* manager = new ConnectionManager();
-    manager->init();
-    return manager;
-}
-
-SocketServer::ConnectionManager::~ConnectionManager() {
-    // TODO: Implement this.
-}
-
-void SocketServer::ConnectionManager::init() {
-    FD_ZERO(&connection_fds);
-}
-
-bool SocketServer::ConnectionManager::has_connections() const {
-    return !active_connections.empty();
-}
-
-void SocketServer::ConnectionManager::get_connections_fds(fd_set *dest) const {
-    *dest = connection_fds;
-}
-
-void SocketServer::ConnectionManager::add_connection(
-        const Connection &connection) {
-    shared_ptr<Connection> connection_(new Connection());
-    connection.copy_to(connection_.get());
-
-    add_fd(connection_->get_fd());
-    active_connections[connection_->get_fd()] = connection_;
-}
-
-void SocketServer::ConnectionManager::remove_connection(
-        const Connection &connection) {
-    remove_connection_by_fd(connection.get_fd());
-}
-
-void SocketServer::ConnectionManager::remove_connection_by_fd(int fd) {
-    map<int, shared_ptr<Connection> >::iterator it;
-    it = active_connections.find(fd);
-    if (it != active_connections.end()) {
-        remove_fd(fd);
-        active_connections.erase(it);
-    }
-}
-
-void SocketServer::ConnectionManager::add_fd(int fd) {
-    if (fd > fdmax) {
-        fdmax = fd;
-    }
-    FD_SET(fd, &connection_fds);
-}
-
-void SocketServer::ConnectionManager::remove_fd(int fd) {
-    // TODO: Do we have to update fdmax? I'm guessing no.
-    FD_CLR(fd, &connection_fds);
-}
-
-bool SocketServer::ConnectionManager::get_connection(int fd,
-        Connection *dest) const {
-    map<int, shared_ptr<Connection> >::const_iterator it;
-    it = active_connections.find(fd);
-    if (it != active_connections.end()) {
-        it->second->copy_to(dest);
-        return true;
-    } else {
-        return false;
-    }
 }
 
 SocketServer *SocketServer::create() {

@@ -11,6 +11,7 @@
 #include "gtest/gtest.h"
 
 #include "connection.h"
+#include "connection_manager.h"
 #include "socket_server.h"
 
 using std::string;
@@ -39,8 +40,7 @@ TEST(SocketServer_Connection, get_addr_str) {
 }
 
 TEST(SocketServer_ConnectionManager, add_connection) {
-    shared_ptr<SocketServer::ConnectionManager>
-            manager(SocketServer::ConnectionManager::create());
+    shared_ptr<ConnectionManager> manager(ConnectionManager::create());
 
     Connection conn1(1);
     Connection conn2(2);
@@ -56,8 +56,7 @@ TEST(SocketServer_ConnectionManager, add_connection) {
 }
 
 TEST(SocketServer_ConnectionManager, remove_connection) {
-    shared_ptr<SocketServer::ConnectionManager>
-            manager(SocketServer::ConnectionManager::create());
+    shared_ptr<ConnectionManager> manager(ConnectionManager::create());
 
     Connection conn1(1);
     Connection conn2(2);
@@ -85,8 +84,7 @@ TEST(SocketServer_ConnectionManager, remove_connection) {
 }
 
 TEST(SocketServer_ConnectionManager, get_connection) {
-    shared_ptr<SocketServer::ConnectionManager>
-            manager(SocketServer::ConnectionManager::create());
+    shared_ptr<ConnectionManager> manager(ConnectionManager::create());
 
     Connection conn(1);
 

@@ -14,45 +14,13 @@ using std::tr1::shared_ptr;
 namespace sprawlnet {
 
 class Connection;
+class ConnectionManager;
 
 class SocketServer {
     public:
-    // TODO: Extract this class.
-    class ConnectionManager {
-        public:
-        ConnectionManager() : fdmax(0) {};
-        ~ConnectionManager();
-
-        static ConnectionManager* create();
-
-        bool has_connections() const;
-        /**
-         * Get a connection.
-         *
-         * Creates a copy of the connection in `dest'.
-         *
-         * @returns true if the connection was copied, false otherwise.
-         */
-        bool get_connection(int fd, Connection *dest) const;
-        int get_fdmax() const { return fdmax; }
-        void add_connection(const Connection &connection);
-        void remove_connection_by_fd(int fd);
-        void remove_connection(const Connection &connection);
-        void get_connections_fds(fd_set *dest) const;
-        void init();
-
-        private:
-        void add_fd(int fd);
-        void remove_fd(int fd);
-        int fdmax;
-        fd_set connection_fds;
-        map<int, shared_ptr<Connection> > active_connections; 
-    };
-
-    SocketServer() {}
-
     static SocketServer* create();
 
+    SocketServer() {}
     void init();
     
     /**
