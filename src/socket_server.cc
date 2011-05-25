@@ -232,6 +232,7 @@ bool SocketServer::ConnectionManager::get_connection(int fd,
 
 void SocketServer::init() {
     connection_manager.reset(new ConnectionManager());
+    FD_ZERO(&listener_sockets);
 }
 
 int SocketServer::bind(const char *port) {
@@ -258,8 +259,9 @@ int SocketServer::bind(const char *port) {
                 perror("bind()");
             } else {
                 printf("Bound to %s.\n", connection.get_address_str().c_str());
+                connection_manager.add_connection(connection);
+                FD_SET(fd, listener_sockets);
                 sockets_bound++;
-                // TODO: Register fds.
             }
         }
     }
