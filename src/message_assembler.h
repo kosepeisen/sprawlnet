@@ -31,7 +31,6 @@ struct PartialMessage {
     char *buffer;
 };
 
-// TODO: This class needs to have a MessageHandler of some kind.
 class MessageAssembler {
     public:
     MessageAssembler(MessageParserInterface * const parser)
