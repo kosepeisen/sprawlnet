@@ -16,12 +16,13 @@
 #ifndef MESSAGE_PARSER_H
 #define MESSAGE_PARSER_H
 
+#include "message_parser_interface.h"
+
 namespace sprawlnet {
 
-class MessageParser {
+class MessageParser : public MessageParserInterface {
     public:
     MessageParser() {}
-    ~MessageParser() {}
 
     void parse(const char *message, size_t message_size);
 

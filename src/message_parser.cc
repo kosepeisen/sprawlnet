@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. See accompanying LICENSE file.
  */
+#include <string.h>
+
 #include <iostream>
 
 #include "message_parser.h"
@@ -20,6 +22,15 @@
 using std::cout;
 using std::endl;
 
+namespace sprawlnet {
+
 void MessageParser::parse(const char *message, size_t message_size) {
-    cout << "Parsing message: " << message << endl;
+    char *message_ = new char[message_size + 1];
+    memcpy(message_, message, message_size);
+    message_[message_size] = '\0';
+
+    cout << "Parsing message: " << message_ << endl;
+    delete message;
 }
+
+} // namespace sprawlnet
