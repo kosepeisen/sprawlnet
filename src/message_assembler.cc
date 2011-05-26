@@ -19,6 +19,7 @@
 
 #include "connection.h"
 #include "message_assembler.h"
+#include "message_parser.h"
 
 using std::cout;
 using std::endl;
@@ -82,7 +83,7 @@ void MessageAssembler::assemble_partial(const Connection &connection,
     partial->bytes_received += bytes_to_copy;
 
     if (partial->bytes_received == partial->message_size) {
-        handle(partial->buffer, partial->message_size);
+        parser->parse(partial->buffer, partial->message_size);
         partial_messages.erase(connection.get_fd());
         assemble(connection, buffer + bytes_to_copy, buffer_size - bytes_to_copy);
     }
@@ -99,17 +100,8 @@ MessageAssembler::get_partial_message(const Connection &connection) {
     }
 }
 
-void MessageAssembler::handle(const char *buffer, size_t buffer_size) {
-    char *message = new char[buffer_size+1];
-    memcpy(message, buffer, buffer_size);
-    message[buffer_size] = '\0';
-    cout << "Got message: " << message << endl;
-
-    delete message;
-}
-
 void MessageAssembler::close_connection(const Connection &connection) {
     partial_messages.erase(connection.get_fd());
-};
+}
 
 } // namespace sprawlnet
