@@ -19,7 +19,7 @@ all: main test
 .PHONY:proto
 proto:
 	mkdir -p src/message
-	$(PROTOC) $(PROTOFLAGS) proto/message.proto
+	$(PROTOC) $(PROTOFLAGS) proto/message_handler.proto
 
 .PHONY:main
 main: proto main.o $(OBJS) 
