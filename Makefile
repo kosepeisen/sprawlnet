@@ -19,7 +19,7 @@ all: main test
 .PHONY:proto
 proto:
 	mkdir -p src/message
-	$(PROTOC) $(PROTOFLAGS) proto/message_handler.proto
+	$(PROTOC) $(PROTOFLAGS) proto/message_header.proto
 
 .PHONY:main
 main: proto main.o $(OBJS) 
@@ -40,5 +40,5 @@ memcheck:
 
 .PHONY:clean
 clean:
-	rm -f src/message/*.pb.{cc,h,o}
-	rm -f */*.o *.o 
+	rm -f src/message/*.pb.cc src/message/*.pb.h
+	rm -f */*/*.o */*.o *.o 
