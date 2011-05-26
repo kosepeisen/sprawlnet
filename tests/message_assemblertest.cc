@@ -50,7 +50,6 @@ class TestMessageAssembler : public MessageAssembler {
     TestMessageAssembler()
             : message(NULL), 
               message_length(0) {
-        MessageAssembler::MessageAssembler();
     }
 
     PartialMessage *test_get_partial_message(const Connection &connection) {
