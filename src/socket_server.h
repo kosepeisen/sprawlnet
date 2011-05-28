@@ -32,7 +32,7 @@ class Connection;
 class ConnectionManager;
 
 class SocketServer {
-    public:
+public:
     static SocketServer* create();
     SocketServer() {}
     void init();
@@ -53,7 +53,7 @@ class SocketServer {
      */
     void listen();
 
-    private:
+private:
     shared_ptr<ConnectionManager> all_connections;
     fd_set listener_sockets;
 

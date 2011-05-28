@@ -26,7 +26,7 @@ namespace sprawlnet {
 class Connection;
 
 class ConnectionManager {
-    public:
+public:
     ConnectionManager() : fdmax(0) {};
     ~ConnectionManager();
 
@@ -48,7 +48,7 @@ class ConnectionManager {
     void get_connections_fds(fd_set *dest) const;
     void init();
 
-    private:
+private:
     // Not copyable.
     ConnectionManager(const ConnectionManager &);
     ConnectionManager &operator=(const ConnectionManager &);
