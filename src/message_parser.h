@@ -21,12 +21,12 @@
 namespace sprawlnet {
 
 class MessageParser : public MessageParserInterface {
-    public:
+public:
     MessageParser() {}
 
     void parse(const char *message, size_t message_size);
 
-    private:
+private:
     MessageParser(const MessageParser &);
     MessageParser &operator=(const MessageParser &);
 };

@@ -44,7 +44,7 @@ void generate_message(const char *message_str,
 }
 
 class TestMessageParser : public MessageParserInterface {
-    public:
+public:
     char *message;
     int message_length;
 
@@ -58,7 +58,7 @@ class TestMessageParser : public MessageParserInterface {
 };
 
 class TestMessageAssembler : public MessageAssembler {
-    public:
+public:
     TestMessageAssembler(MessageParserInterface *const parser)
             : MessageAssembler(parser) {
     }
@@ -73,7 +73,7 @@ class TestMessageAssembler : public MessageAssembler {
 };
 
 class MessageAssemblerTest : public ::testing::Test {
-    public:
+public:
         Connection connection;
         TestMessageParser parser;
         TestMessageAssembler assembler;

@@ -24,7 +24,7 @@ using std::tr1::shared_ptr;
 bool delete_called = false;
 
 class A {
-    public:
+public:
     ~A() {
         delete_called = true;
     }

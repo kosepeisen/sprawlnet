@@ -28,7 +28,7 @@ class Connection {
     struct sockaddr *address;
     socklen_t address_len;
 
-    public:
+public:
     Connection() : fd(-1), address_len(0) {}
     Connection(int fd) : fd(fd), address(NULL), address_len(0) {}
     ~Connection();
@@ -40,7 +40,7 @@ class Connection {
     socklen_t get_address_length() const { return address_len; }
     void copy_to(Connection *dest) const;
 
-    private:
+private:
     // Not copyable.
     Connection(const Connection &);
     Connection &operator=(const Connection &);

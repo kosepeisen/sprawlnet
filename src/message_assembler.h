@@ -32,7 +32,7 @@ struct PartialMessage {
 };
 
 class MessageAssembler {
-    public:
+public:
     MessageAssembler(MessageParserInterface * const parser)
             : parser(parser) {};
     virtual ~MessageAssembler() {};
@@ -47,7 +47,7 @@ class MessageAssembler {
      */
     void close_connection(const Connection &connection);
     
-    protected:
+protected:
     MessageParserInterface *const parser;
     std::map<int, std::tr1::shared_ptr<PartialMessage> > partial_messages;
 
@@ -55,7 +55,7 @@ class MessageAssembler {
             size_t buffer_size);
     PartialMessage *get_partial_message(const Connection &connection);
 
-    private:
+private:
 
     MessageAssembler(const MessageAssembler &);
     MessageAssembler &operator=(const MessageAssembler &);
