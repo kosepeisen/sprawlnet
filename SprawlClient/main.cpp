@@ -8,6 +8,8 @@
 
 #include <iostream>
 
+#include "SprawlNet.h"
+
 int main (int argc, const char * argv[])
 {
 
