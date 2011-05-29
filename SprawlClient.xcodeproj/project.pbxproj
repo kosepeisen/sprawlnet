@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0166085413927A7A00767D18 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0166085313927A7A00767D18 /* main.cpp */; };
 		0166085D13927AA400767D18 /* SprawlNet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0166085B13927AA400767D18 /* SprawlNet.cpp */; };
+		0166086E139299BC00767D18 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 0166086D139299BC00767D18 /* Makefile */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,6 +30,7 @@
 		0166085513927A7A00767D18 /* SprawlClient.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = SprawlClient.1; sourceTree = "<group>"; };
 		0166085B13927AA400767D18 /* SprawlNet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SprawlNet.cpp; sourceTree = "<group>"; };
 		0166085C13927AA400767D18 /* SprawlNet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SprawlNet.h; sourceTree = "<group>"; };
+		0166086D139299BC00767D18 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = SprawlClient/Makefile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +47,7 @@
 		0166084413927A7900767D18 = {
 			isa = PBXGroup;
 			children = (
+				0166086D139299BC00767D18 /* Makefile */,
 				0166085213927A7A00767D18 /* SprawlClient */,
 				0166085013927A7A00767D18 /* Products */,
 			);
@@ -94,6 +97,9 @@
 /* Begin PBXProject section */
 		0166084613927A7900767D18 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = Kosepeisen;
+			};
 			buildConfigurationList = 0166084913927A7900767D18 /* Build configuration list for PBXProject "SprawlClient" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -118,6 +124,7 @@
 			files = (
 				0166085413927A7A00767D18 /* main.cpp in Sources */,
 				0166085D13927AA400767D18 /* SprawlNet.cpp in Sources */,
+				0166086E139299BC00767D18 /* Makefile in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
