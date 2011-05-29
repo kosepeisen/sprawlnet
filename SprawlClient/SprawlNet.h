@@ -1,17 +1,16 @@
 //
-//  main.cpp
+//  SprawlNet.h
 //  SprawlClient
 //
 //  Created by Ole Andre Birkedal on 5/29/11.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#include <iostream>
-
-int main (int argc, const char * argv[])
+class SprawlNet
 {
-
-
-    return 0;
-}
-
+public:
+    SprawlNet();
+    ~SprawlNet();
+private:
+    // ...
+};

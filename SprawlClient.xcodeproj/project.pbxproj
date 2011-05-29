@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0166085413927A7A00767D18 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0166085313927A7A00767D18 /* main.cpp */; };
+		0166085D13927AA400767D18 /* SprawlNet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0166085B13927AA400767D18 /* SprawlNet.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,6 +27,8 @@
 		0166084F13927A7A00767D18 /* SprawlClient */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SprawlClient; sourceTree = BUILT_PRODUCTS_DIR; };
 		0166085313927A7A00767D18 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		0166085513927A7A00767D18 /* SprawlClient.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = SprawlClient.1; sourceTree = "<group>"; };
+		0166085B13927AA400767D18 /* SprawlNet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SprawlNet.cpp; sourceTree = "<group>"; };
+		0166085C13927AA400767D18 /* SprawlNet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SprawlNet.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +63,8 @@
 			children = (
 				0166085313927A7A00767D18 /* main.cpp */,
 				0166085513927A7A00767D18 /* SprawlClient.1 */,
+				0166085B13927AA400767D18 /* SprawlNet.cpp */,
+				0166085C13927AA400767D18 /* SprawlNet.h */,
 			);
 			path = SprawlClient;
 			sourceTree = "<group>";
@@ -112,6 +117,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0166085413927A7A00767D18 /* main.cpp in Sources */,
+				0166085D13927AA400767D18 /* SprawlNet.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
