@@ -25,6 +25,7 @@ class MessageParserInterface;
 class Connection;
 
 struct PartialMessage {
+    PartialMessage() : bytes_received(0), message_size(0), buffer(NULL) {}
     ~PartialMessage();
     size_t bytes_received;
     size_t message_size;
@@ -40,8 +41,7 @@ public:
     void assemble(const Connection &connection, const char *buffer,
             size_t buffer_size);
 
-    /**
-     * Call this method when a peer disconnects.
+    /** Call this method when a peer disconnects.
      *
      * This will free up space in partial_messages.
      */
@@ -51,12 +51,24 @@ protected:
     MessageParserInterface *const parser;
     std::map<int, std::tr1::shared_ptr<PartialMessage> > partial_messages;
 
+    PartialMessage *get_partial_message(const Connection &connection) const;
+
+    /** Register a new partial message for connection. */
+    void new_partial_message(const Connection &connection);
     void assemble_partial(const Connection &connection, const char *buffer,
             size_t buffer_size);
-    PartialMessage *get_partial_message(const Connection &connection);
+    size_t assemble_header(const Connection &connection, const char *buffer,
+            size_t buffer_size);
+
+    /** Initialize partial.
+     *
+     * Allocate the buffer with respect to message_length and reset
+     * bytes_received.
+     */
+    void initialize_partial(PartialMessage *partial,
+            size_t message_size) const;
 
 private:
-
     MessageAssembler(const MessageAssembler &);
     MessageAssembler &operator=(const MessageAssembler &);
 };

@@ -35,6 +35,7 @@ class SocketServer {
 public:
     static SocketServer* create();
     SocketServer() {}
+    virtual ~SocketServer();
     void init();
     
     /**
@@ -53,8 +54,12 @@ public:
      */
     void listen();
 
-private:
+protected:
+    void close_all_connections();
+    virtual void close_connection(const Connection &connection);
     shared_ptr<ConnectionManager> all_connections;
+
+private:
     fd_set listener_sockets;
 
     // Not copyable.
@@ -69,7 +74,7 @@ private:
      * This struct will specify the default criteria for selecting the socket
      * address to listen to.
      */
-    void init_hints(struct addrinfo *hints); 
+    void init_hints(struct addrinfo *hints) const; 
 
     /** 
      * Enable reuseaddr on the socket.
@@ -77,12 +82,11 @@ private:
      * That way, we can bind to it several times, and we avoid the "address
      * already in use" issue.
      */
-    void enable_reuseaddr(int fd);
+    void enable_reuseaddr(int fd) const;
 
     void handle_fd_activity(int fd);
     void accept_new_connection(const Connection &listener);
     void receive_from_connection(const Connection &connection);
-    void close_connection(const Connection &connection);
 };
 }
 

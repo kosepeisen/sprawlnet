@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "string_util.h"
 #include "connection.h"
 
 using std::string;
@@ -32,6 +33,11 @@ Connection::~Connection() {
 string Connection::get_address_str() const {
     char host_buffer[NI_MAXHOST];
     char serv_buffer[NI_MAXSERV];
+
+    if (address_len == 0) {
+        return string("<Address not initialized. Fd: " + 
+                int_to_string(fd) + ">");
+    }
 
     int status = getnameinfo(address, address_len, host_buffer,
             sizeof(host_buffer), serv_buffer, sizeof(serv_buffer),

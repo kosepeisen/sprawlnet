@@ -42,6 +42,10 @@ SocketServer *SocketServer::create() {
     return socketServer;
 }
 
+SocketServer::~SocketServer() {
+    close_all_connections();
+}
+
 void SocketServer::init() {
     all_connections.reset(ConnectionManager::create());
     FD_ZERO(&listener_sockets);
@@ -111,7 +115,7 @@ bool SocketServer::try_bind_connection(const Connection &connection) {
     return result;
 }
 
-void SocketServer::init_hints(struct addrinfo *hints) {
+void SocketServer::init_hints(struct addrinfo *hints) const {
     memset(hints, 0, sizeof(struct addrinfo));
     hints->ai_family = AF_UNSPEC;
     hints->ai_socktype = SOCK_STREAM;
@@ -198,6 +202,19 @@ void SocketServer::receive_from_connection(const Connection &connection) {
     }
 }
 
+void SocketServer::close_all_connections() {
+    fd_set fds;
+    Connection connection;
+    all_connections->get_connections_fds(&fds);
+
+    for (int fd = 0; fd <= all_connections->get_fdmax(); fd++) {
+        if (FD_ISSET(fd, &fds)) {
+            all_connections->get_connection(fd, &connection);
+            close_connection(connection);
+        }
+    }
+}
+
 void SocketServer::close_connection(const Connection &connection) {
     printf("Closing connection with address %s\n",
             connection.get_address_str().c_str());
@@ -209,7 +226,7 @@ void SocketServer::close_connection(const Connection &connection) {
     }
 }
 
-void SocketServer::enable_reuseaddr(int fd) {
+void SocketServer::enable_reuseaddr(int fd) const {
     int value = 1;
     int status = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &value, sizeof(int));
     if (status == -1) {

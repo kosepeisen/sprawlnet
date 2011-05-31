@@ -42,33 +42,64 @@ void MessageAssembler::assemble(const Connection &connection,
     }
 
     PartialMessage *partial = get_partial_message(connection);
-
-    if (partial) {
-        assemble_partial(connection, buffer, buffer_size);
-    } else {
-        if (buffer_size < sizeof(int)) {
-            // TODO: Make a partial message; handle split message headers.
-            cout << "Handling message. Buffer too small." << endl;
-            return;
-        }
-
-        // TODO: Add a maximum size and error handling if a message will be too
-        // big.
-        partial = new PartialMessage();
-        partial->bytes_received = 0;
-        partial->message_size = *(int*)buffer;
-        partial->buffer = new char[partial->message_size];
-
-        partial_messages[connection.get_fd()] =
-                shared_ptr<PartialMessage>(partial);
-        assemble_partial(connection, buffer + sizeof(int),
-                buffer_size - sizeof(int));
+    if (!partial) {
+        new_partial_message(connection);
     }
+
+    assemble_partial(connection, buffer, buffer_size);
 }
+
+void MessageAssembler::new_partial_message(const Connection &connection) {
+    PartialMessage *partial = new PartialMessage();
+    partial_messages[connection.get_fd()] =
+            shared_ptr<PartialMessage>(partial);
+}
+
+void MessageAssembler::initialize_partial(PartialMessage *partial,
+        size_t message_size) const {
+    partial->message_size = message_size;
+    partial->bytes_received = 0;
+    if (partial->buffer) {
+        delete partial->buffer;
+    }
+    partial->buffer = new char[message_size];
+}
+
+size_t MessageAssembler::assemble_header(const Connection &connection,
+        const char *buffer, size_t buffer_size) {
+    PartialMessage *partial = get_partial_message(connection);
+
+    size_t bytes_left = sizeof(int) - partial->bytes_received;
+
+    size_t bytes_to_copy = 0;
+    if (buffer_size < bytes_left) {
+        bytes_to_copy = buffer_size;
+    } else {
+        bytes_to_copy = bytes_left;
+    }
+
+    size_t *message_size_buffer = &partial->message_size +
+            partial->bytes_received;
+    memcpy(message_size_buffer, buffer, bytes_to_copy);
+    partial->bytes_received += bytes_to_copy;
+
+    if (partial->bytes_received == sizeof(int)) {
+        initialize_partial(partial, partial->message_size);
+    }
+
+    return bytes_to_copy;
+}
+
 
 void MessageAssembler::assemble_partial(const Connection &connection,
         const char *buffer, size_t buffer_size) {
     PartialMessage *partial = get_partial_message(connection);
+
+    if (!partial->buffer) {
+        size_t offset = assemble_header(connection, buffer, buffer_size);
+        buffer += offset;
+        buffer_size -= offset;
+    }
 
     size_t bytes_left = partial->message_size - partial->bytes_received;
 
@@ -90,7 +121,7 @@ void MessageAssembler::assemble_partial(const Connection &connection,
 }
 
 PartialMessage *
-MessageAssembler::get_partial_message(const Connection &connection) {
+MessageAssembler::get_partial_message(const Connection &connection) const {
     map<int, shared_ptr<PartialMessage> >::const_iterator it =
             partial_messages.find(connection.get_fd());
     if (it == partial_messages.end()) {
