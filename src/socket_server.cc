@@ -42,6 +42,10 @@ SocketServer *SocketServer::create() {
     return socketServer;
 }
 
+SocketServer::~SocketServer() {
+    close_all_connections();
+}
+
 void SocketServer::init() {
     all_connections.reset(ConnectionManager::create());
     FD_ZERO(&listener_sockets);
@@ -195,6 +199,19 @@ void SocketServer::receive_from_connection(const Connection &connection) {
     } else {
         buffer[num_bytes_read] = '\0';
         printf("Received data from client: %s\n", buffer);
+    }
+}
+
+void SocketServer::close_all_connections() {
+    fd_set fds;
+    Connection connection;
+    all_connections->get_connections_fds(&fds);
+
+    for (int fd = 0; fd <= all_connections->get_fdmax(); fd++) {
+        if (FD_ISSET(fd, &fds)) {
+            all_connections->get_connection(fd, &connection);
+            close_connection(connection);
+        }
     }
 }
 

@@ -35,6 +35,7 @@ class SocketServer {
 public:
     static SocketServer* create();
     SocketServer() {}
+    virtual ~SocketServer();
     void init();
     
     /**
@@ -53,8 +54,12 @@ public:
      */
     void listen();
 
-private:
+protected:
+    void close_all_connections();
+    virtual void close_connection(const Connection &connection);
     shared_ptr<ConnectionManager> all_connections;
+
+private:
     fd_set listener_sockets;
 
     // Not copyable.
@@ -82,7 +87,6 @@ private:
     void handle_fd_activity(int fd);
     void accept_new_connection(const Connection &listener);
     void receive_from_connection(const Connection &connection);
-    void close_connection(const Connection &connection);
 };
 }
 
