@@ -6,6 +6,8 @@
 //  Copyright 2011 Kosepeisen. All rights reserved.
 //
 
+#include <string.h>
+
 #include "SprawlNet.h"
 
 SprawlNet::SprawlNet( const std::string &Host, const std::string &Port )
