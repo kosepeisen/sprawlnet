@@ -139,28 +139,28 @@ TEST_F(MessageAssemblerTest, assemble_multiple) {
     delete combined;
 }
 
-TEST_F(MessageAssemblerTest, splitted_header) {
+TEST_F(MessageAssemblerTest, split_header) {
     char *message;
     int message_length;
-    generate_message("Splitted header message.", &message_length, &message);
+    generate_message("Split header message.", &message_length, &message);
 
     assembler.assemble(connection, message, 1);
     assembler.assemble(connection, message + 1, message_length - 1);
 
-    EXPECT_STREQ("Splitted header message.", parser.message);
+    EXPECT_STREQ("Split header message.", parser.message);
 
     delete message;
 }
 
-TEST_F(MessageAssemblerTest, splitted_header_2) {
+TEST_F(MessageAssemblerTest, split_header_2) {
     char *message;
     int message_length;
-    generate_message("Another splitted header message.", &message_length, &message);
+    generate_message("Another split header message.", &message_length, &message);
 
     assembler.assemble(connection, message, 1);
     assembler.assemble(connection, message + 1, message_length - 1);
 
-    EXPECT_STREQ("Another splitted header message.", parser.message);
+    EXPECT_STREQ("Another split header message.", parser.message);
 
     delete message;
 }
