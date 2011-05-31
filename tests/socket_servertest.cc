@@ -141,6 +141,8 @@ TEST(SocketServerTest, close_all_connections) {
 
     server->close_all_connections();
     EXPECT_EQ(7, server->closed_connection);
+
+    delete server;
 }
 
 }

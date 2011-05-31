@@ -29,7 +29,7 @@ class Connection {
     socklen_t address_len;
 
 public:
-    Connection() : fd(-1), address_len(0) {}
+    Connection() : fd(-1), address(NULL), address_len(0) {}
     Connection(int fd) : fd(fd), address(NULL), address_len(0) {}
     ~Connection();
 
