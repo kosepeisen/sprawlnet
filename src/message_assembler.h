@@ -51,14 +51,12 @@ protected:
     MessageParserInterface *const parser;
     std::map<int, std::tr1::shared_ptr<PartialMessage> > partial_messages;
 
-    PartialMessage *get_partial_message(const Connection &connection);
+    PartialMessage *get_partial_message(const Connection &connection) const;
 
     /** Register a new partial message for connection. */
     void new_partial_message(const Connection &connection);
-
     void assemble_partial(const Connection &connection, const char *buffer,
             size_t buffer_size);
-
     size_t assemble_header(const Connection &connection, const char *buffer,
             size_t buffer_size);
 
@@ -67,7 +65,8 @@ protected:
      * Allocate the buffer with respect to message_length and reset
      * bytes_received.
      */
-    void initialize_partial(PartialMessage *partial, size_t message_size);
+    void initialize_partial(PartialMessage *partial,
+            size_t message_size) const;
 
 private:
     MessageAssembler(const MessageAssembler &);

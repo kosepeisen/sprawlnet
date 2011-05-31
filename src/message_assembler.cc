@@ -56,7 +56,7 @@ void MessageAssembler::new_partial_message(const Connection &connection) {
 }
 
 void MessageAssembler::initialize_partial(PartialMessage *partial,
-        size_t message_size) {
+        size_t message_size) const {
     partial->message_size = message_size;
     partial->bytes_received = 0;
     if (partial->buffer) {
@@ -121,7 +121,7 @@ void MessageAssembler::assemble_partial(const Connection &connection,
 }
 
 PartialMessage *
-MessageAssembler::get_partial_message(const Connection &connection) {
+MessageAssembler::get_partial_message(const Connection &connection) const {
     map<int, shared_ptr<PartialMessage> >::const_iterator it =
             partial_messages.find(connection.get_fd());
     if (it == partial_messages.end()) {

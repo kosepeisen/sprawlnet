@@ -74,7 +74,7 @@ private:
      * This struct will specify the default criteria for selecting the socket
      * address to listen to.
      */
-    void init_hints(struct addrinfo *hints); 
+    void init_hints(struct addrinfo *hints) const; 
 
     /** 
      * Enable reuseaddr on the socket.
@@ -82,7 +82,7 @@ private:
      * That way, we can bind to it several times, and we avoid the "address
      * already in use" issue.
      */
-    void enable_reuseaddr(int fd);
+    void enable_reuseaddr(int fd) const;
 
     void handle_fd_activity(int fd);
     void accept_new_connection(const Connection &listener);

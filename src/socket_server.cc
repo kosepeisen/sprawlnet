@@ -115,7 +115,7 @@ bool SocketServer::try_bind_connection(const Connection &connection) {
     return result;
 }
 
-void SocketServer::init_hints(struct addrinfo *hints) {
+void SocketServer::init_hints(struct addrinfo *hints) const {
     memset(hints, 0, sizeof(struct addrinfo));
     hints->ai_family = AF_UNSPEC;
     hints->ai_socktype = SOCK_STREAM;
@@ -226,7 +226,7 @@ void SocketServer::close_connection(const Connection &connection) {
     }
 }
 
-void SocketServer::enable_reuseaddr(int fd) {
+void SocketServer::enable_reuseaddr(int fd) const {
     int value = 1;
     int status = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &value, sizeof(int));
     if (status == -1) {
