@@ -114,7 +114,7 @@ class TestSocketServer : public SocketServer {
 public:
     int closed_connection;
 
-    TestSocketServer() : SocketServer(), closed_connection(-1) {
+    TestSocketServer() : SocketServer(NULL), closed_connection(-1) {
         init();
     }
 

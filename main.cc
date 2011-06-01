@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. See accompanying LICENSE file.
  */
-#include "socket_server.h"
 #include <memory>
 
+#include "message_assembler.h"
+#include "message_parser.h"
+#include "socket_server.h"
+
 using std::auto_ptr;
+using sprawlnet::MessageAssembler;
+using sprawlnet::MessageParser;
 using sprawlnet::SocketServer;
 
 int main() {
-    auto_ptr<SocketServer> server(SocketServer::create());
+    MessageParser parser;
+    MessageAssembler assembler(&parser);
+    auto_ptr<SocketServer> server(SocketServer::create(&assembler));
     server->bind("1337");
     server->listen();
     return 0;

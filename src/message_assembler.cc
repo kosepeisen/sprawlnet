@@ -29,7 +29,10 @@ using std::tr1::shared_ptr;
 namespace sprawlnet {
 
 PartialMessage::~PartialMessage() {
-    delete buffer;
+    if (buffer) {
+        delete buffer;
+        buffer = NULL;
+    }
 }
 
 void MessageAssembler::assemble(const Connection &connection,
@@ -61,6 +64,7 @@ void MessageAssembler::initialize_partial(PartialMessage *partial,
     partial->bytes_received = 0;
     if (partial->buffer) {
         delete partial->buffer;
+        partial->buffer = NULL;
     }
     partial->buffer = new char[message_size];
 }

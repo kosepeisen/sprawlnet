@@ -30,11 +30,13 @@ namespace sprawlnet {
 
 class Connection;
 class ConnectionManager;
+class MessageAssembler;
 
 class SocketServer {
 public:
-    static SocketServer* create();
-    SocketServer() {}
+    static SocketServer* create(MessageAssembler * const assembler);
+    SocketServer(MessageAssembler * const assembler) 
+            : assembler(assembler) {}
     virtual ~SocketServer();
     void init();
     
@@ -55,12 +57,14 @@ public:
     void listen();
 
 protected:
+    shared_ptr<ConnectionManager> all_connections;
+
     void close_all_connections();
     virtual void close_connection(const Connection &connection);
-    shared_ptr<ConnectionManager> all_connections;
 
 private:
     fd_set listener_sockets;
+    MessageAssembler * const assembler;
 
     // Not copyable.
     SocketServer(const SocketServer &);

@@ -25,6 +25,7 @@
 
 #include "connection.h"
 #include "connection_manager.h"
+#include "message_assembler.h"
 #include "socket_server.h"
 
 using std::string;
@@ -36,8 +37,8 @@ void error(const char *msg) {
     exit(1);
 }
 
-SocketServer *SocketServer::create() {
-    SocketServer* socketServer = new SocketServer();
+SocketServer *SocketServer::create(MessageAssembler * const assembler) {
+    SocketServer* socketServer = new SocketServer(assembler);
     socketServer->init();
     return socketServer;
 }
@@ -197,7 +198,7 @@ void SocketServer::receive_from_connection(const Connection &connection) {
         close_connection(connection);
     } else {
         buffer[num_bytes_read] = '\0';
-        printf("Received data from client: %s\n", buffer);
+        assembler->assemble(connection, buffer, num_bytes_read);
     }
 }
 

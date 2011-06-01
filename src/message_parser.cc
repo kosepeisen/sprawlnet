@@ -30,7 +30,7 @@ void MessageParser::parse(const char *message, size_t message_size) {
     message_[message_size] = '\0';
 
     cout << "Parsing message: " << message_ << endl;
-    delete message;
+    delete message_;
 }
 
 } // namespace sprawlnet
