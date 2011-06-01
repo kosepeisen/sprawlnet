@@ -20,11 +20,6 @@
 #include <sys/select.h>
 
 #include <tr1/memory>
-#include <map>
-#include <string>
-
-using std::map;
-using std::tr1::shared_ptr;
 
 namespace sprawlnet {
 
@@ -57,7 +52,7 @@ public:
     void listen();
 
 protected:
-    shared_ptr<ConnectionManager> all_connections;
+    std::tr1::shared_ptr<ConnectionManager> all_connections;
 
     void close_all_connections();
     virtual void close_connection(const Connection &connection);
