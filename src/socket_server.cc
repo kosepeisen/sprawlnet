@@ -188,7 +188,7 @@ void SocketServer::accept_new_connection(const Connection &listener) {
 
 void SocketServer::receive_from_connection(const Connection &connection) {
     const size_t BUFSIZE = 1024;
-    char buffer[BUFSIZE+1];
+    char buffer[BUFSIZE];
     int num_bytes_read = recv(connection.get_fd(), buffer, BUFSIZE, 0);
     if (num_bytes_read < 0) {
         perror("Could not receive from socket: recv()");
@@ -197,7 +197,6 @@ void SocketServer::receive_from_connection(const Connection &connection) {
         printf("Connection closed.\n");
         close_connection(connection);
     } else {
-        buffer[num_bytes_read] = '\0';
         assembler->assemble(connection, buffer, num_bytes_read);
     }
 }
