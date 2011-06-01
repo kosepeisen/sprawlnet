@@ -12,10 +12,12 @@
 
 #include "SprawlNet.h"
 
-void CreateMessage(std::string Content, char **MessageDest, size_t *LengthDest) {
+void CreateMessage(std::string Content, char **MessageDest,
+        size_t *LengthDest) {
+    *LengthDest = Content.length() + sizeof(int);
     *MessageDest = new char[Content.length() + sizeof(int)];
-    *LengthDest = Content.length();
-    memcpy(*MessageDest, LengthDest, sizeof(int));
+    int MessageLength = Content.length();
+    memcpy(*MessageDest, &MessageLength, sizeof(int));
     memcpy(*MessageDest + sizeof(int), Content.c_str(), Content.length());
 }
 
