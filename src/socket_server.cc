@@ -142,7 +142,6 @@ void SocketServer::listen() {
 
         for (int fd = 0; fd <= all_connections->get_fdmax(); fd++) {
             if (FD_ISSET(fd, &sockets_copy)) {
-                printf("handle_fd_activity(%d)\n", fd);
                 handle_fd_activity(fd);
             }
         }
