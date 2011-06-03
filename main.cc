@@ -30,5 +30,6 @@ int main() {
     auto_ptr<SocketServer> server(SocketServer::create(&assembler));
     server->bind("1337");
     server->listen();
+    server->destroy();
     return 0;
 }

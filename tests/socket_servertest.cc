@@ -122,24 +122,20 @@ public:
         all_connections->add_connection(connection);
     }
 
-    void close_all_connections() {
-        SocketServer::close_all_connections();    
-    }
-
 protected:
     void close_connection(const Connection &connection) {
         closed_connection = connection.get_fd();
+        SocketServer::close_connection(connection);
     }
 };
 
 TEST(SocketServerTest, close_all_connections) {
     TestSocketServer *server = new TestSocketServer();
-    server->init();
 
     Connection connection(7);
     server->add_connection(connection);
 
-    server->close_all_connections();
+    server->destroy();
     EXPECT_EQ(7, server->closed_connection);
 
     delete server;
