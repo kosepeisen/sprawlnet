@@ -14,10 +14,11 @@
  * limitations under the License. See accompanying LICENSE file.
  */
 #include <arpa/inet.h>
+#include <assert.h>
 #include <netdb.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -44,12 +45,16 @@ SocketServer *SocketServer::create(MessageAssembler * const assembler) {
 }
 
 SocketServer::~SocketServer() {
-    close_all_connections();
+    assert(!all_connections->has_connections());
 }
 
 void SocketServer::init() {
     all_connections.reset(ConnectionManager::create());
     FD_ZERO(&listener_sockets);
+}
+
+void SocketServer::destroy() {
+    close_all_connections();
 }
 
 int SocketServer::bind(const char *port) {

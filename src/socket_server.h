@@ -33,7 +33,9 @@ public:
     SocketServer(MessageAssembler * const assembler) 
             : assembler(assembler) {}
     virtual ~SocketServer();
-    void init();
+
+    /** Call destroy() before deleting a SocketServer. */
+    void destroy();
     
     /**
      * Bind to a port.
@@ -52,6 +54,7 @@ public:
     void listen();
 
 protected:
+    void init();
     std::tr1::shared_ptr<ConnectionManager> all_connections;
 
     void close_all_connections();
