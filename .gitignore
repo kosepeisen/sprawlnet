@@ -1,3 +1,8 @@
 *.o
 main
 tests/runtests
+libsprawl.a
+*.d
+src/message
+server
+client
