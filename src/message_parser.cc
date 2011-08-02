@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. See accompanying LICENSE file.
  */
-#include <string.h>
+#include "message_parser.h"
 
+#include <cstring>
 #include <iostream>
 
-#include "message_parser.h"
+#include "message/message_header.pb.h"
 
 using std::cout;
 using std::cerr;
