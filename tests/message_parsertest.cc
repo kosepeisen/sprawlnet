@@ -13,37 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. See accompanying LICENSE file.
  */
-#ifndef MESSAGE_PARSER_H
-#define MESSAGE_PARSER_H
+#include "message_parser.h"
 
-#include "message_parser_interface.h"
+#include <string.h>
 
-#include <cstring>
+#include "gtest/gtest.h"
 
 namespace sprawlnet {
 
-/**
- * Parser a message header and sends it to a MessageHandler.
- *
- * Messages must be at least 4 bytes long.
- */
-class MessageParser : public MessageParserInterface {
-    friend class MessageParserTest;
+class MessageParserTest : public ::testing::Test {
 public:
-    MessageParser() {}
+    MessageParser message_parser;
 
-    void parse(const char *message, size_t message_size);
-
-private:
-    bool is_valid_message(const char *message, size_t message_size);
-    size_t get_header_length(const char* message);
-
-    MessageParser(const MessageParser &);
-    MessageParser &operator=(const MessageParser &);
+    void test_get_header_length() {
+        size_t message_length = 4;
+        const char *message = reinterpret_cast<char*>(&message_length);
+        EXPECT_EQ(message_length, message_parser.get_header_length(message));
+    }
 };
 
+TEST_F(MessageParserTest, get_header_length) {
+    test_get_header_length();
+}
+
 } // namespace sprawlnet
-
-#endif
-
-

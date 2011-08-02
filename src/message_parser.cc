@@ -20,17 +20,36 @@
 #include "message_parser.h"
 
 using std::cout;
+using std::cerr;
 using std::endl;
 
 namespace sprawlnet {
 
+bool MessageParser::is_valid_message(const char *message, size_t message_size) {
+    if (message_size < 4) {
+        cerr << "Message invalid: message_size < 4" << endl;
+        return false;
+    }
+    return true;
+}
+
 void MessageParser::parse(const char *message, size_t message_size) {
+    if (!is_valid_message(message, message_size)) {
+        cerr << "Ignoring invalid message." << endl;    
+        return;
+    }
     char *message_ = new char[message_size + 1];
     memcpy(message_, message, message_size);
     message_[message_size] = '\0';
 
     cout << "Parsing message: " << message_ << endl;
     delete message_;
+}
+
+size_t MessageParser::get_header_length(const char *message) {
+    size_t header_length;
+    memcpy(&header_length, message, sizeof(size_t));
+    return header_length;
 }
 
 } // namespace sprawlnet

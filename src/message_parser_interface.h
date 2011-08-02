@@ -16,6 +16,8 @@
 #ifndef MESSAGE_PARSER_INTERFACE_H
 #define MESSAGE_PARSER_INTERFACE_H
 
+#include <cstdlib>
+
 namespace sprawlnet {
 
 class MessageParserInterface {
