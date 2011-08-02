@@ -53,4 +53,9 @@ size_t MessageParser::get_header_length(const char *message) {
     return header_length;
 }
 
+bool MessageParser::parse_header(const char *message, size_t header_length,
+        message::MessageHeader* result) {
+    return result->ParseFromString(message);
+}
+
 } // namespace sprawlnet

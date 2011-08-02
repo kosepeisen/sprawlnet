@@ -20,6 +20,8 @@
 
 #include <cstring>
 
+#include "message/message_header.pb.h"
+
 namespace sprawlnet {
 
 /**
@@ -37,6 +39,13 @@ public:
 private:
     bool is_valid_message(const char *message, size_t message_size);
     size_t get_header_length(const char* message);
+
+    /** Parse message header.
+     *
+     * Returns true if header was parsed successfully, false otherwise.
+     */
+    bool parse_header(const char* message, size_t header_length,
+            message::MessageHeader* result);
 
     MessageParser(const MessageParser &);
     MessageParser &operator=(const MessageParser &);

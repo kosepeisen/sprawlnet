@@ -15,9 +15,13 @@
  */
 #include "message_parser.h"
 
-#include <string.h>
-
 #include "gtest/gtest.h"
+#include <cstring>
+#include <string>
+
+#include "message/message_header.pb.h"
+
+using std::string;
 
 namespace sprawlnet {
 
@@ -30,10 +34,25 @@ public:
         const char *message = reinterpret_cast<char*>(&message_length);
         EXPECT_EQ(message_length, message_parser.get_header_length(message));
     }
+
+    void test_parse_header() {
+        message::MessageHeader src;
+        src.set_message_type("my message type");
+        string message;
+        ASSERT_TRUE(src.SerializeToString(&message));
+
+        message::MessageHeader target;
+        message_parser.parse_header(message.c_str(), message.size(), &target);
+        EXPECT_EQ(src.message_type(), target.message_type());
+    }
 };
 
 TEST_F(MessageParserTest, get_header_length) {
     test_get_header_length();
+}
+
+TEST_F(MessageParserTest, parse_header) {
+    test_parse_header();
 }
 
 } // namespace sprawlnet
