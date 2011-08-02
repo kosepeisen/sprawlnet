@@ -44,6 +44,18 @@ void MessageParser::parse(const char *message, size_t message_size) {
     message_[message_size] = '\0';
 
     cout << "Parsing message: " << message_ << endl;
+
+    size_t header_length = get_header_length(message);
+
+    cout << "Parsing message header." << endl;
+    message::MessageHeader header;
+    if (parse_header(message + sizeof(size_t), header_length, &header)) {
+        cout << "Message type: " << header.message_type() << endl;
+    } else {
+        cerr << "Could not parse message header. Please upgrade your client :P"
+                << endl;
+    }
+
     delete message_;
 }
 
